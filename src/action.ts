@@ -10,6 +10,7 @@ import {
   getValidTags,
   mapCustomReleaseRules,
 } from './utils';
+import { getCustomTransformForWriterOpts } from './conventionalChangelog';
 import { createTag } from './github';
 import { Await } from './ts';
 
@@ -150,8 +151,13 @@ export default async function main() {
   core.info(`New tag after applying prefix is ${newTag}.`);
   core.setOutput('new_tag', newTag);
 
+  core.info(`generateNotes >>> ${JSON.stringify(mappedReleaseRules)}`);
   const changelog = await generateNotes(
-    {},
+    {
+      writerOpts: {
+        transform: getCustomTransformForWriterOpts(mappedReleaseRules),
+      },
+    },
     {
       commits,
       logger: { log: console.info.bind(console) },

@@ -75,21 +75,29 @@ export function mapCustomReleaseRules(customReleaseTypes: string) {
     .split(releaseRuleSeparator)
     .map((customReleaseRule) => customReleaseRule.split(releaseTypeSeparator))
     .filter((customReleaseRule) => {
-      if (customReleaseRule.length !== 2) {
+      const releaseRule = customReleaseRule.join(releaseTypeSeparator);
+
+      if (customReleaseRule.length < 2) {
         core.warning(
-          `${customReleaseRule.join(
-            releaseTypeSeparator
-          )} is not a valid custom release definition.`
+          `${releaseRule} is not a valid custom release definition.`
         );
         return false;
       }
+
+      if (customReleaseRule.length !== 3) {
+        core.warning(
+          `${releaseRule} doesn't explicitly mention the section for changelog. 'Miscellaneous' be used as default section`
+        );
+      }
+
       return true;
     })
     .map((customReleaseRule) => {
-      const [keyword, release] = customReleaseRule;
+      const [keyword, release, section] = customReleaseRule;
       return {
         type: keyword,
         release,
+        section,
       };
     })
     .filter((customRelease) => {

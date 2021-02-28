@@ -28,6 +28,7 @@ declare module '@semantic-release/release-notes-generator' {
       preset?: string;
       config?: string;
       parserOpts?: any;
+      writerOpts?: any;
       releaseRules?:
         | string
         | {
